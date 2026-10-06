@@ -56,12 +56,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-neutral-300 mb-1" data-i18n="login_password">Password</label>
+                    <label class="block text-xs font-semibold text-neutral-300 mb-1" data-i18n="login_password">Password / Access Code</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500 rtl:left-auto rtl:right-0 rtl:pr-3">
                             <i class="fa-solid fa-lock"></i>
                         </span>
-                        <input type="password" id="login-password" required class="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-red-600 rtl:pl-4 rtl:pr-10" placeholder="••••••••" value="password123">
+                        <input type="password" id="login-password" required class="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-red-600 rtl:pl-4 rtl:pr-10" placeholder="••••••••" value="12345">
                     </div>
                 </div>
 
@@ -76,7 +76,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- ========================================== -->
     <!-- MAIN DASHBOARD APP (Hidden until login)    -->
@@ -611,7 +610,7 @@
             en: {
                 login_subtitle: "HR Management Portal & Access Gateway",
                 login_email: "Email Address",
-                login_password: "Password",
+                login_password: "Password / Access Code",
                 login_btn: "Sign In to Portal",
                 login_secure: "Secure Corporate Portal • PT Pro Energy",
                 sidebar_subtitle: "HR Management Portal",
@@ -701,7 +700,7 @@
             ar: {
                 login_subtitle: "بوابة إدارة الموارد البشرية وبوابة الدخول",
                 login_email: "البريد الإلكتروني",
-                login_password: "كلمة المرور",
+                login_password: "كلمة المرور / رمز الدخول",
                 login_btn: "تسجيل الدخول إلى البوابة",
                 login_secure: "بوابة الشركات الآمنة • برو أنرجي",
                 sidebar_subtitle: "بوابة إدارة الموارد البشرية",
@@ -818,10 +817,17 @@
             });
         }
 
+        // التحقق من تسجيل الدخول ورمز الدخول 12345
         function handleLogin(event) {
             event.preventDefault();
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('app-screen').classList.remove('hidden');
+            const passwordInput = document.getElementById('login-password').value;
+
+            if (passwordInput === '12345') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+            } else {
+                alert(currentLang === 'ar' ? 'رمز الدخول غير صحيح! رمز الدخول الصحيح هو 12345' : 'Incorrect access code! The correct code is 12345');
+            }
         }
 
         function handleLogout() {
@@ -896,20 +902,41 @@
             }
         }
 
+        // إرسال البريد الإلكتروني عن طريق فتح تطبيق البريد تلقائياً (mailto)
         function confirmSendDailyReport() {
             const recipient = document.getElementById('reportRecipientSelect').value;
             const customEmail = document.getElementById('customRecipientEmail').value;
             const notes = document.getElementById('reportNotes').value;
-            const finalRecipients = customEmail ? `${recipient}, ${customEmail}` : recipient;
+            const finalRecipients = customEmail ? `${recipient},${customEmail}` : recipient;
 
             const dateStr = new Date().toLocaleDateString();
             const leaveCount = document.querySelectorAll('#leave-table-body tr').length;
             const openJobs = document.querySelectorAll('#job-grid > div').length;
 
+            const subject = encodeURIComponent(`Daily HR Report - PT Pro Energy (${dateStr})`);
+            const body = encodeURIComponent(`Daily HR Summary Report - PT Pro Energy
+Date: ${dateStr}
+
+Summary Metrics:
+- Pending Leave Requests: ${leaveCount}
+- Open Job Requisitions: ${openJobs}
+- Active Employees: 248
+- Attendance Rate: 98.2%
+
+Additional Remarks:
+${notes || 'None'}
+
+Sent from Pro Energy HRM Portal
+Sender: admin@proenergy.com`);
+
             closeReportModal();
+
+            // فتح برنامج/تطبيق البريد الإلكتروني تلقائياً للإرسال
+            window.location.href = `mailto:${finalRecipients}?subject=${subject}&body=${body}`;
+
             alert(currentLang === 'ar'
-                ? `تم بنجاح إرسال التقرير اليومي بالبريد إلى (${finalRecipients})!\n\n- التاريخ: ${dateStr}\n- إجمالي الإجازات المعلقة: ${leaveCount}\n- الوظائف الشاغرة: ${openJobs}\n- ملاحظات إضافية: ${notes || 'لا يوجد'}\n- المرسل: admin@proenergy.com`
-                : `Daily HR Report successfully emailed to: ${finalRecipients}\n\n- Date: ${dateStr}\n- Pending Leave Requests: ${leaveCount}\n- Open Job Requisitions: ${openJobs}\n- Notes: ${notes || 'None'}\n- Sent by: admin@proenergy.com`
+                ? `تم فتح تطبيق البريد لإرسال التقرير إلى (${finalRecipients})!`
+                : `Opening email client to send report to (${finalRecipients})!`
             );
         }
 
