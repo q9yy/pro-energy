@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="t-title">Pro Energy - HRM Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Cairo Font for Arabic Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- ========================================== -->
+    <!-- LOGIN VIEW                                 -->
+    <!-- ========================================== -->
+    <div id="login-screen" class="flex min-h-screen items-center justify-center bg-black p-4">
+        <div class="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl p-8 space-y-6">
+            
+            <!-- Logo & Title -->
+            <div class="text-center space-y-2">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-red-600/10 border border-red-600/30 text-red-600 text-3xl mb-1">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-wider text-white">
+                    <span class="text-red-600">PRO</span><span class="text-white">ENERGY</span>
+                </h1>
+                <p class="text-xs text-neutral-400" data-i18n="login_subtitle">HR Management Portal & Access Gateway</p>
+            </div>
+
+            <!-- Language Switcher for Login Screen -->
+            <div class="flex justify-end">
+                <button onclick="toggleLanguage()" class="bg-neutral-800 hover:bg-neutral-700 text-neutral-200 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 rtl:space-x-reverse transition">
+                    <i class="fa-solid fa-globe text-red-600"></i>
+                    <span id="login-lang-btn">العربية</span>
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-300 mb-1" data-i18n="login_email">Email Address</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500 rtl:left-auto rtl:right-0 rtl:pr-3">
+                            <i class="fa-solid fa-envelope"></i>
+                        </span>
+                        <input type="email" id="login-email" required class="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-red-600 rtl:pl-4 rtl:pr-10" placeholder="admin@proenergy.com" value="admin@proenergy.com">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-neutral-300 mb-1" data-i18n="login_password">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500 rtl:left-auto rtl:right-0 rtl:pr-3">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" id="login-password" required class="w-full bg-neutral-950 border border-neutral-800 text-white rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-red-600 rtl:pl-4 rtl:pr-10" placeholder="••••••••" value="password123">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg text-sm shadow-lg shadow-red-900/20 transition flex items-center justify-center space-x-2 rtl:space-x-reverse">
+                    <span data-i18n="login_btn">Sign In to Portal</span>
+                    <i class="fa-solid fa-arrow-right rtl:rotate-180"></i>
+                </button>
+            </form>
+
+            <div class="pt-4 border-t border-neutral-800 text-center text-xs text-neutral-500">
+                <span data-i18n="login_secure">Secure Corporate Portal • PT Pro Energy</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- MAIN DASHBOARD APP (Hidden until login)    -->
+    <!-- ========================================== -->
+    <div id="app-screen" class="flex h-screen overflow-hidden hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-black text-white flex flex-col hidden md:flex border-r border-red-900/30">
+            <div class="p-5 text-2xl font-bold tracking-wider border-b border-neutral-900 flex items-center justify-between">
+                <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                    <i class="fa-solid fa-bolt text-red-600"></i>
+                    <span class="text-red-600">PRO</span><span class="text-white">ENERGY</span>
+                </div>
+            </div>
+            <div class="px-5 py-2 text-xs uppercase text-neutral-400 font-semibold tracking-wider" data-i18n="sidebar_subtitle">HR Management Portal</div>
+            <nav class="flex-1 px-4 space-y-1 mt-2">
+                <a href="#" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg bg-red-600 text-white font-medium transition">
+                    <i class="fa-solid fa-chart-pie w-5"></i>
+                    <span data-i18n="nav_dashboard">Dashboard</span>
+                </a>
+                <a href="#" onclick="switchTab('employees')" id="nav-employees" class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg text-neutral-300 hover:bg-neutral-900 transition">
+                    <i class="fa-solid fa-users w-5"></i>
+                    <span data-i18n="nav_employees">Employees</span>
+                </a>
+                <a href="#" onclick="switchTab('attendance')" id="nav-attendance" class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg text-neutral-300 hover:bg-neutral-900 transition">
+                    <i class="fa-solid fa-clipboard-user w-5"></i>
+                    <span data-i18n="nav_attendance">Attendance Sheet</span>
+                </a>
+                <a href="#" onclick="switchTab('leave')" id="nav-leave" class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg text-neutral-300 hover:bg-neutral-900 transition">
+                    <i class="fa-solid fa-calendar-days w-5"></i>
+                    <span data-i18n="nav_leave">Leave Requests</span>
+                </a>
+                <a href="#" onclick="switchTab('recruitment')" id="nav-recruitment" class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg text-neutral-300 hover:bg-neutral-900 transition">
+                    <i class="fa-solid fa-user-plus w-5"></i>
+                    <span data-i18n="nav_recruitment">Recruitment</span>
+                </a>
+                <a href="#" onclick="switchTab('admin')" id="nav-admin" class="flex items-center space-x-3 rtl:space-x-reverse px-4 py-3 rounded-lg text-neutral-300 hover:bg-neutral-900 transition border-t border-neutral-900 mt-2">
+                    <i class="fa-solid fa-shield-halved w-5 text-red-500"></i>
+                    <span data-i18n="nav_admin">Admin Center</span>
+                </a>
+            </nav>
+            <div class="p-4 border-t border-neutral-900 text-sm text-neutral-400">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                        <div class="w-8 h-8 rounded-full bg-red-600 text-white font-bold flex items-center justify-center">HR</div>
+                        <div>
+                            <p class="text-white font-medium text-xs" data-i18n="hr_manager">HR Manager</p>
+                            <p class="text-[10px] text-neutral-400">admin@proenergy.com</p>
+                        </div>
+                    </div>
+                    <button onclick="handleLogout()" title="Sign Out" class="text-neutral-400 hover:text-red-500 transition p-1">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            
+            <!-- Top Header -->
+            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6 z-10 border-b border-gray-100">
+                <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                    <h1 id="page-title" class="text-xl font-bold text-gray-900" data-i18n="dashboard_title">HR Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                    <!-- Send Daily Report Button -->
+                    <button onclick="openReportModal()" class="bg-black hover:bg-neutral-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 rtl:space-x-reverse transition shadow-sm">
+                        <i class="fa-solid fa-paper-plane text-red-500"></i>
+                        <span data-i18n="btn_send_report">Send Daily Report</span>
+                    </button>
+                    <!-- Language Switcher Button -->
+                    <button onclick="toggleLanguage()" class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 rtl:space-x-reverse transition">
+                        <i class="fa-solid fa-globe text-red-600"></i>
+                        <span id="app-lang-btn">العربية</span>
+                    </button>
+                    <span class="hidden sm:inline-block text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full font-semibold" data-i18n="live_system">Live System</span>
+                    <button onclick="handleLogout()" class="md:hidden text-gray-600 hover:text-red-600 text-sm">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <main class="p-6">
+                
+                <!-- DASHBOARD TAB -->
+                <div id="tab-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500" data-i18n="card_total_emp">Total Employees</p>
+                                <h3 class="text-3xl font-bold text-gray-900 mt-1">248</h3>
+                                <span class="text-xs text-emerald-600 font-semibold" data-i18n="card_total_emp_sub"><i class="fa-solid fa-arrow-up"></i> +4 this month</span>
+                            </div>
+                            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-lg flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500" data-i18n="card_pending_leave">Pending Leave</p>
+                                <h3 class="text-3xl font-bold text-gray-900 mt-1" id="dash-leave-count">12</h3>
+                                <span class="text-xs text-red-600 font-semibold" data-i18n="card_pending_leave_sub">Requires Approval</span>
+                            </div>
+                            <div class="w-12 h-12 bg-neutral-100 text-black rounded-lg flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500" data-i18n="card_open_pos">Open Positions</p>
+                                <h3 class="text-3xl font-bold text-gray-900 mt-1" id="dash-open-count">2</h3>
+                                <span class="text-xs text-emerald-600 font-semibold" data-i18n="card_open_pos_sub">Active Hiring</span>
+                            </div>
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-briefcase"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500" data-i18n="card_attendance">Attendance Rate</p>
+                                <h3 class="text-3xl font-bold text-gray-900 mt-1">98.2%</h3>
+                                <span class="text-xs text-emerald-600 font-semibold"><i class="fa-solid fa-arrow-up"></i> +0.4%</span>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-user-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4" data-i18n="company_overview_title">Company Overview</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed" data-i18n="company_overview_desc">
+                                Welcome to the Pro Energy Human Resources Management System. PT Pro Energy operates across commercial fuel sectors including manufacturing, mining, commercial, plantations, transportation, construction, and marine/fisheries. Use this portal to manage staff rosters, coordinate branches across regions, track leave requests, and monitor attendance seamlessly.
+                            </p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4" data-i18n="quick_actions_title">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button onclick="switchTab('employees')" class="w-full text-start px-4 py-3 rounded-lg bg-red-50 hover:bg-red-100 text-red-800 font-medium text-sm flex items-center justify-between transition">
+                                    <span><i class="fa-solid fa-user-plus mr-2 rtl:ml-2 rtl:mr-0"></i> <span data-i18n="qa_add_emp">Add New Employee</span></span>
+                                    <i class="fa-solid fa-chevron-right text-xs rtl:rotate-180"></i>
+                                </button>
+                                <button onclick="switchTab('leave')" class="w-full text-start px-4 py-3 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium text-sm flex items-center justify-between transition">
+                                    <span><i class="fa-solid fa-calendar-days mr-2 rtl:ml-2 rtl:mr-0"></i> <span data-i18n="qa_leave">Manage Leave Requests</span></span>
+                                    <i class="fa-solid fa-chevron-right text-xs rtl:rotate-180"></i>
+                                </button>
+                                <button onclick="switchTab('recruitment')" class="w-full text-start px-4 py-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 font-medium text-sm flex items-center justify-between transition">
+                                    <span><i class="fa-solid fa-briefcase mr-2 rtl:ml-2 rtl:mr-0"></i> <span data-i18n="qa_recruitment">Manage Job Requisitions</span></span>
+                                    <i class="fa-solid fa-chevron-right text-xs rtl:rotate-180"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMPLOYEES TAB -->
+                <div id="tab-employees" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-gray-900" data-i18n="emp_directory">Employee Directory</h2>
+                        <button onclick="openModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow-sm transition">
+                            <i class="fa-solid fa-plus mr-1 rtl:ml-1 rtl:mr-0"></i> <span data-i18n="btn_add_emp">Add Employee</span>
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <table class="w-full text-start border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold">
+                                    <th class="p-4" data-i18n="th_name">Name</th>
+                                    <th class="p-4" data-i18n="th_position">Position</th>
+                                    <th class="p-4" data-i18n="th_dept">Department</th>
+                                    <th class="p-4" data-i18n="th_location">Location</th>
+                                    <th class="p-4" data-i18n="th_status">Status</th>
+                                    <th class="p-4 text-center" data-i18n="th_action">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employee-table-body" class="divide-y divide-gray-100 text-sm">
+                                <tr>
+                                    <td class="p-4 font-medium text-gray-900">Budi Santoso</td>
+                                    <td class="p-4 text-gray-600">Operations Supervisor</td>
+                                    <td class="p-4 text-gray-600">Logistics</td>
+                                    <td class="p-4 text-gray-600">Semarang Hub</td>
+                                    <td class="p-4"><span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-medium" data-i18n="status_active">Active</span></td>
+                                    <td class="p-4 text-center">
+                                        <button onclick="deleteRow(this)" title="Delete Employee" class="text-gray-400 hover:text-red-600 transition p-1.5">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ATTENDANCE SHEET TAB -->
+                <div id="tab-attendance" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-gray-900" data-i18n="attendance_title">Employee Attendance Sheet</h2>
+                        <button onclick="openAttendanceModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow-sm transition">
+                            <i class="fa-solid fa-user-clock mr-1 rtl:ml-1 rtl:mr-0"></i> <span data-i18n="btn_log_attendance">Log Attendance</span>
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <table class="w-full text-start border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold">
+                                    <th class="p-4" data-i18n="th_name">Name</th>
+                                    <th class="p-4" data-i18n="th_dept">Department</th>
+                                    <th class="p-4" data-i18n="th_checkin">Check-in Time</th>
+                                    <th class="p-4" data-i18n="th_checkout">Check-out Time</th>
+                                    <th class="p-4" data-i18n="th_att_status">Attendance Status</th>
+                                    <th class="p-4 text-center" data-i18n="th_action">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-table-body" class="divide-y divide-gray-100 text-sm">
+                                <tr>
+                                    <td class="p-4 font-medium text-gray-900">Budi Santoso</td>
+                                    <td class="p-4 text-gray-600">Logistics</td>
+                                    <td class="p-4 text-gray-600">07:55 AM</td>
+                                    <td class="p-4 text-gray-600">05:00 PM</td>
+                                    <td class="p-4"><span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-medium" data-i18n="att_present">Present</span></td>
+                                    <td class="p-4 text-center">
+                                        <button onclick="deleteRow(this)" title="Delete Record" class="text-gray-400 hover:text-red-600 transition p-1.5">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- LEAVE REQUESTS TAB -->
+                <div id="tab-leave" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-900" data-i18n="leave_title">Pending Leave Requests</h2>
+                            <p class="text-xs text-gray-500 mt-0.5" data-i18n="leave_subtitle">Review, approve, add, or delete leave requests by reason category.</p>
+                        </div>
+                        <button onclick="openLeaveModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow-sm transition">
+                            <i class="fa-solid fa-plus mr-1 rtl:ml-1 rtl:mr-0"></i> <span data-i18n="btn_add_leave">Add Leave Request</span>
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <table class="w-full text-start border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold">
+                                    <th class="p-4" data-i18n="th_emp">Employee</th>
+                                    <th class="p-4" data-i18n="th_leave_type">Leave Reason Category</th>
+                                    <th class="p-4" data-i18n="th_dates">Dates</th>
+                                    <th class="p-4" data-i18n="th_reason">Details / Notes</th>
+                                    <th class="p-4 text-center" data-i18n="th_action">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leave-table-body" class="divide-y divide-gray-100 text-sm">
+                                <tr>
+                                    <td class="p-4 font-medium text-gray-900">Joko Widodo</td>
+                                    <td class="p-4"><span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-semibold" data-i18n="reason_annual">Annual Leave</span></td>
+                                    <td class="p-4 text-gray-600">Oct 12 - Oct 15</td>
+                                    <td class="p-4 text-gray-600">Family event & religious holiday travel</td>
+                                    <td class="p-4 text-center space-x-2 rtl:space-x-reverse">
+                                        <button onclick="alert('Leave request approved!')" class="bg-emerald-500 text-white px-3 py-1 rounded text-xs hover:bg-emerald-600" data-i18n="btn_approve">Approve</button>
+                                        <button onclick="alert('Leave request rejected!')" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700" data-i18n="btn_reject">Reject</button>
+                                        <button onclick="deleteLeaveRow(this)" title="Delete Request" class="text-gray-400 hover:text-red-600 transition p-1.5 inline-block">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-medium text-gray-900">Siti Rahma</td>
+                                    <td class="p-4"><span class="bg-purple-100 text-purple-800 text-xs px-2.5 py-1 rounded-full font-semibold" data-i18n="reason_medical">Medical / Sick Leave</span></td>
+                                    <td class="p-4 text-gray-600">Oct 18 - Oct 19</td>
+                                    <td class="p-4 text-gray-600">Clinic prescribed rest & checkup</td>
+                                    <td class="p-4 text-center space-x-2 rtl:space-x-reverse">
+                                        <button onclick="alert('Leave request approved!')" class="bg-emerald-500 text-white px-3 py-1 rounded text-xs hover:bg-emerald-600" data-i18n="btn_approve">Approve</button>
+                                        <button onclick="alert('Leave request rejected!')" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700" data-i18n="btn_reject">Reject</button>
+                                        <button onclick="deleteLeaveRow(this)" title="Delete Request" class="text-gray-400 hover:text-red-600 transition p-1.5 inline-block">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- RECRUITMENT TAB -->
+                <div id="tab-recruitment" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-900" data-i18n="recruitment_title">Open Job Requisitions</h2>
+                            <p class="text-xs text-gray-500 mt-0.5" data-i18n="recruitment_subtitle">Manage open vacancies, department hiring, and applicant pipelines.</p>
+                        </div>
+                        <button onclick="openJobModal()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow-sm transition">
+                            <i class="fa-solid fa-plus mr-1 rtl:ml-1 rtl:mr-0"></i> <span data-i18n="btn_add_job">Add Job Opening</span>
+                        </button>
+                    </div>
+
+                    <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-bold text-gray-900">Senior Commercial Fuel Sales Executive</h3>
+                                    <button onclick="deleteJobCard(this)" title="Delete Job Requisition" class="text-gray-400 hover:text-red-600 transition p-1">
+                                        <i class="fa-solid fa-trash-can text-sm"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Location: Jakarta / Lampung Hub</p>
+                                <p class="text-sm text-gray-600 mt-3" data-i18n="job_desc_1">Responsible for handling key accounts across mining and industrial manufacturing sectors.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded font-medium">8 Applicants</span>
+                                <button onclick="alert('Viewing candidate pipeline')" class="text-red-600 text-sm font-semibold hover:underline" data-i18n="view_pipeline">View Pipeline &rarr;</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-bold text-gray-900">Logistics Fleet Coordinator</h3>
+                                    <button onclick="deleteJobCard(this)" title="Delete Job Requisition" class="text-gray-400 hover:text-red-600 transition p-1">
+                                        <i class="fa-solid fa-trash-can text-sm"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Location: Semarang Depot</p>
+                                <p class="text-sm text-gray-600 mt-3" data-i18n="job_desc_2">Coordinate daily cistern truck deliveries and driver compliance.</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded font-medium">14 Applicants</span>
+                                <button onclick="alert('Viewing candidate pipeline')" class="text-red-600 text-sm font-semibold hover:underline" data-i18n="view_pipeline">View Pipeline &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADMIN CENTER TAB -->
+                <div id="tab-admin" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-bold text-gray-900" data-i18n="admin_title">System Administration & Access Control</h2>
+                    </div>
+
+                    <!-- Report Recipients Management Box -->
+                    <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 space-y-4">
+                        <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-sm" data-i18n="report_recipients_title">Daily Report Recipient Email List</h3>
+                                <p class="text-xs text-gray-500" data-i18n="report_recipients_subtitle">Specify email addresses of managers and executives who need to receive daily automated HR status reports.</p>
+                            </div>
+                            <button onclick="addRecipientPrompt()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow-sm transition">
+                                <i class="fa-solid fa-plus mr-1 rtl:ml-1 rtl:mr-0"></i> <span data-i18n="btn_add_recipient">Add Recipient Email</span>
+                            </button>
+                        </div>
+                        <ul id="recipient-list" class="divide-y divide-gray-100 text-sm">
+                            <li class="py-2 flex justify-between items-center">
+                                <div>
+                                    <span class="font-medium text-gray-900">General Manager</span>
+                                    <span class="text-xs text-gray-500 ml-2 rtl:mr-2 rtl:ml-0">(manager@proenergy.com)</span>
+                                </div>
+                                <button onclick="removeRecipient(this)" class="text-gray-400 hover:text-red-600 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
+                            </li>
+                            <li class="py-2 flex justify-between items-center">
+                                <div>
+                                    <span class="font-medium text-gray-900">HR Operations Director</span>
+                                    <span class="text-xs text-gray-500 ml-2 rtl:mr-2 rtl:ml-0">(hr.director@proenergy.com)</span>
+                                </div>
+                                <button onclick="removeRecipient(this)" class="text-gray-400 hover:text-red-600 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <table class="w-full text-start border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-100 text-xs uppercase text-gray-500 font-semibold">
+                                    <th class="p-4" data-i18n="th_admin_name">Administrator Name</th>
+                                    <th class="p-4" data-i18n="th_admin_email">Email Address</th>
+                                    <th class="p-4" data-i18n="th_admin_role">Access Role</th>
+                                    <th class="p-4" data-i18n="th_admin_branch">Assigned Branch</th>
+                                    <th class="p-4 text-center" data-i18n="th_action">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-sm">
+                                <tr>
+                                    <td class="p-4 font-medium text-gray-900">Ir. H. Bambang Susanto</td>
+                                    <td class="p-4 text-gray-600">bambang.s@proenergy.com</td>
+                                    <td class="p-4"><span class="bg-purple-100 text-purple-800 text-xs px-2.5 py-1 rounded-full font-semibold">Super Admin</span></td>
+                                    <td class="p-4 text-gray-600">Jakarta HQ</td>
+                                    <td class="p-4 text-center">
+                                        <button onclick="deleteRow(this)" title="Revoke Admin" class="text-gray-400 hover:text-red-600 transition p-1.5">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Daily Report Modal -->
+    <div id="reportModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 space-y-4">
+            <h3 class="text-lg font-bold text-gray-900" data-i18n="report_modal_title">Send Daily Report via Email</h3>
+            <p class="text-xs text-gray-500" data-i18n="report_modal_desc">Select recipient manager email and enter optional remarks to dispatch daily HR status overview.</p>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-semibold text-gray-600" data-i18n="select_recipient">Select Recipient Manager</label>
+                    <select id="reportRecipientSelect" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-red-600">
+                        <option value="manager@proenergy.com">General Manager (manager@proenergy.com)</option>
+                        <option value="hr.director@proenergy.com">HR Operations Director (hr.director@proenergy.com)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-600" data-i18n="custom_recipient_note">Additional Custom Recipient (Optional)</label>
+                    <input type="email" id="customRecipientEmail" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="e.g. executive@proenergy.com">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-600" data-i18n="report_notes">Notes / Summary Remarks</label>
+                    <textarea id="reportNotes" rows="2" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Add optional remarks..."></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 rtl:space-x-reverse pt-2">
+                <button onclick="closeReportModal()" class="px-4 py-2 rounded-lg text-sm bg-gray-100 text-gray-700" data-i18n="modal_cancel">Cancel</button>
+                <button onclick="confirmSendDailyReport()" class="px-4 py-2 rounded-lg text-sm bg-red-600 text-white font-semibold flex items-center space-x-1 rtl:space-x-reverse">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                    <span data-i18n="btn_confirm_send">Send Report Email</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="employeeModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 space-y-4">
+            <h3 class="text-lg font-bold text-gray-900" data-i18n="modal_title">Add New Employee</h3>
+            <div class="space-y-3">
+                <input type="text" id="empName" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Full Name">
+                <input type="text" id="empPos" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Position">
+                <input type="text" id="empDept" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Department">
+                <input type="text" id="empLoc" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Location">
+            </div>
+            <div class="flex justify-end space-x-2 rtl:space-x-reverse pt-2">
+                <button onclick="closeModal()" class="px-4 py-2 rounded-lg text-sm bg-gray-100 text-gray-700" data-i18n="modal_cancel">Cancel</button>
+                <button onclick="addEmployee()" class="px-4 py-2 rounded-lg text-sm bg-red-600 text-white font-semibold" data-i18n="modal_save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="attendanceModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 space-y-4">
+            <h3 class="text-lg font-bold text-gray-900" data-i18n="attendance_modal_title">Log Employee Attendance</h3>
+            <div class="space-y-3">
+                <input type="text" id="attName" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Employee Name">
+                <input type="text" id="attDept" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Department">
+                <input type="text" id="attIn" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Check-in Time (e.g. 08:00 AM)">
+                <input type="text" id="attOut" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Check-out Time (e.g. 05:00 PM)">
+                <select id="attStatus" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
+                    <option value="Present">Present</option>
+                    <option value="Late">Late</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </div>
+            <div class="flex justify-end space-x-2 rtl:space-x-reverse pt-2">
+                <button onclick="closeAttendanceModal()" class="px-4 py-2 rounded-lg text-sm bg-gray-100 text-gray-700" data-i18n="modal_cancel">Cancel</button>
+                <button onclick="addAttendanceRecord()" class="px-4 py-2 rounded-lg text-sm bg-red-600 text-white font-semibold" data-i18n="attendance_modal_save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Leave Request Modal -->
+    <div id="leaveModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 space-y-4">
+            <h3 class="text-lg font-bold text-gray-900" data-i18n="leave_modal_title">Add Leave Request</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-semibold text-gray-600" data-i18n="modal_name">Employee Name</label>
+                    <input type="text" id="leaveName" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="e.g. Dewi Lestari">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-600" data-i18n="th_leave_type">Leave Reason Category</label>
+                    <select id="leaveReasonType" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-red-600">
+                        <option value="Annual Leave" data-i18n="reason_annual">Annual Leave</option>
+                        <option value="Medical Leave" data-i18n="reason_medical">Medical / Sick Leave</option>
+                        <option value="Emergency Leave" data-i18n="reason_emergency">Emergency Leave</option>
+                        <option value="Family Event" data-i18n="reason_family">Family Event / Wedding</option>
+                        <option value="Maternity / Paternity" data-i18n="reason_maternity">Maternity / Paternity</option>
+                        <option value="Unpaid Leave" data-i18n="reason_unpaid">Unpaid Leave</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-600" data-i18n="th_dates">Dates Range</label>
+                    <input type="text" id="leaveDates" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="e.g. Nov 01 - Nov 05">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-600" data-i18n="th_reason">Details / Notes</label>
+                    <input type="text" id="leaveDetails" class="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="e.g. Annual holiday trip">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 rtl:space-x-reverse pt-2">
+                <button onclick="closeLeaveModal()" class="px-4 py-2 rounded-lg text-sm bg-gray-100 text-gray-700" data-i18n="modal_cancel">Cancel</button>
+                <button onclick="addLeaveRequest()" class="px-4 py-2 rounded-lg text-sm bg-red-600 text-white font-semibold" data-i18n="leave_modal_save">Submit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Job Requisition Modal -->
+    <div id="jobModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 space-y-4">
+            <h3 class="text-lg font-bold text-gray-900" data-i18n="job_modal_title">Add Open Job Requisition</h3>
+            <div class="space-y-3">
+                <input type="text" id="jobTitleInput" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Job Title">
+                <input type="text" id="jobLocInput" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Location">
+                <textarea id="jobDescInput" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" placeholder="Description"></textarea>
+                <input type="number" id="jobAppCount" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-red-600" value="0" min="0">
+            </div>
+            <div class="flex justify-end space-x-2 rtl:space-x-reverse pt-2">
+                <button onclick="closeJobModal()" class="px-4 py-2 rounded-lg text-sm bg-gray-100 text-gray-700" data-i18n="modal_cancel">Cancel</button>
+                <button onclick="addJobOpening()" class="px-4 py-2 rounded-lg text-sm bg-red-600 text-white font-semibold" data-i18n="job_modal_save">Post</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const translations = {
+            en: {
+                login_subtitle: "HR Management Portal & Access Gateway",
+                login_email: "Email Address",
+                login_password: "Password",
+                login_btn: "Sign In to Portal",
+                login_secure: "Secure Corporate Portal • PT Pro Energy",
+                sidebar_subtitle: "HR Management Portal",
+                nav_dashboard: "Dashboard",
+                nav_employees: "Employees",
+                nav_attendance: "Attendance Sheet",
+                nav_leave: "Leave Requests",
+                nav_recruitment: "Recruitment",
+                nav_admin: "Admin Center",
+                hr_manager: "HR Manager",
+                dashboard_title: "HR Dashboard",
+                live_system: "Live System",
+                btn_send_report: "Send Daily Report",
+                card_total_emp: "Total Employees",
+                card_total_emp_sub: "+4 this month",
+                card_pending_leave: "Pending Leave",
+                card_pending_leave_sub: "Requires Approval",
+                card_open_pos: "Open Positions",
+                card_open_pos_sub: "Active Hiring",
+                card_attendance: "Attendance Rate",
+                company_overview_title: "Company Overview",
+                company_overview_desc: "Welcome to the Pro Energy Human Resources Management System. PT Pro Energy operates across commercial fuel sectors including manufacturing, mining, commercial, plantations, transportation, construction, and marine/fisheries.",
+                quick_actions_title: "Quick Actions",
+                qa_add_emp: "Add New Employee",
+                qa_leave: "Manage Leave Requests",
+                qa_recruitment: "Manage Job Requisitions",
+                emp_directory: "Employee Directory",
+                btn_add_emp: "Add Employee",
+                th_name: "Name",
+                th_position: "Position",
+                th_dept: "Department",
+                th_location: "Location",
+                th_status: "Status",
+                th_action: "Action",
+                status_active: "Active",
+                attendance_title: "Employee Attendance Sheet",
+                btn_log_attendance: "Log Attendance",
+                th_checkin: "Check-in Time",
+                th_checkout: "Check-out Time",
+                th_att_status: "Attendance Status",
+                att_present: "Present",
+                leave_title: "Pending Leave Requests",
+                leave_subtitle: "Review, approve, add, or delete leave requests by reason category.",
+                btn_add_leave: "Add Leave Request",
+                th_emp: "Employee",
+                th_leave_type: "Leave Reason Category",
+                th_dates: "Dates",
+                th_reason: "Details / Notes",
+                btn_approve: "Approve",
+                btn_reject: "Reject",
+                reason_annual: "Annual Leave",
+                reason_medical: "Medical / Sick Leave",
+                reason_emergency: "Emergency Leave",
+                reason_family: "Family Event / Wedding",
+                reason_maternity: "Maternity / Paternity",
+                reason_unpaid: "Unpaid Leave",
+                recruitment_title: "Open Job Requisitions",
+                recruitment_subtitle: "Manage open vacancies, department hiring, and applicant pipelines.",
+                btn_add_job: "Add Job Opening",
+                job_desc_1: "Responsible for handling key accounts across mining and industrial manufacturing sectors.",
+                job_desc_2: "Coordinate daily cistern truck deliveries and driver compliance.",
+                view_pipeline: "View Pipeline →",
+                admin_title: "System Administration & Access Control",
+                report_recipients_title: "Daily Report Recipient Email List",
+                report_recipients_subtitle: "Specify email addresses of managers and executives who need to receive daily automated HR status reports.",
+                btn_add_recipient: "Add Recipient Email",
+                report_modal_title: "Send Daily Report via Email",
+                report_modal_desc: "Select recipient manager email and enter optional remarks to dispatch daily HR status overview.",
+                select_recipient: "Select Recipient Manager",
+                custom_recipient_note: "Additional Custom Recipient (Optional)",
+                report_notes: "Notes / Summary Remarks",
+                btn_confirm_send: "Send Report Email",
+                th_admin_name: "Administrator Name",
+                th_admin_email: "Email Address",
+                th_admin_role: "Access Role",
+                th_admin_branch: "Assigned Branch",
+                modal_title: "Add New Employee",
+                modal_cancel: "Cancel",
+                modal_save: "Save",
+                attendance_modal_title: "Log Employee Attendance",
+                attendance_modal_save: "Save",
+                leave_modal_title: "Add Leave Request",
+                leave_modal_save: "Submit Request",
+                job_modal_title: "Add Open Job Requisition",
+                job_modal_save: "Post"
+            },
+            ar: {
+                login_subtitle: "بوابة إدارة الموارد البشرية وبوابة الدخول",
+                login_email: "البريد الإلكتروني",
+                login_password: "كلمة المرور",
+                login_btn: "تسجيل الدخول إلى البوابة",
+                login_secure: "بوابة الشركات الآمنة • برو أنرجي",
+                sidebar_subtitle: "بوابة إدارة الموارد البشرية",
+                nav_dashboard: "لوحة القيادة",
+                nav_employees: "الموظفون",
+                nav_attendance: "سجل الحضور",
+                nav_leave: "طلبات الإجازة",
+                nav_recruitment: "الاستقطاب والتوظيف",
+                nav_admin: "مركز الإدارة",
+                hr_manager: "مدير الموارد البشرية",
+                dashboard_title: "لوحة تحكم الموارد البشرية",
+                live_system: "النظام مباشر",
+                btn_send_report: "إرسال التقرير اليومي",
+                card_total_emp: "إجمالي الموظفين",
+                card_total_emp_sub: "+4 هذا الشهر",
+                card_pending_leave: "الإجازات المعلقة",
+                card_pending_leave_sub: "تتطلب الموافقة",
+                card_open_pos: "الوظائف الشاغرة",
+                card_open_pos_sub: "التوظيف نشط",
+                card_attendance: "معدل الحضور",
+                company_overview_title: "نظرة عامة على الشركة",
+                company_overview_desc: "مرحبًا بكم في نظام إدارة الموارد البشرية في برو أنرجي. تعمل شركة PT Pro Energy في قطاعات الوقود التجاري بما في ذلك التصنيع، والتعدين، والمزارع، والنقل، والبناء.",
+                quick_actions_title: "إجراءات سريعة",
+                qa_add_emp: "إضافة موظف جديد",
+                qa_leave: "إدارة طلبات الإجازة",
+                qa_recruitment: "إدارة الوظائف الشاغرة",
+                emp_directory: "دليل الموظفين",
+                btn_add_emp: "إضافة موظف",
+                th_name: "الاسم",
+                th_position: "المنصب",
+                th_dept: "القسم",
+                th_location: "الموقع",
+                th_status: "الحالة",
+                th_action: "الإجراء",
+                status_active: "نشط",
+                attendance_title: "سجل حضور الموظفين",
+                btn_log_attendance: "تسجيل حضور",
+                th_checkin: "وقت الحضور",
+                th_checkout: "وقت الانصراف",
+                th_att_status: "حالة الحضور",
+                att_present: "حاضر",
+                leave_title: "طلبات الإجازات المعلقة",
+                leave_subtitle: "مراجعة والموافقة على أو إضافة وحذف طلبات الإجازات حسب فئة السبب.",
+                btn_add_leave: "إضافة طلب إجازة",
+                th_emp: "الموظف",
+                th_leave_type: "فئة سبب الإجازة",
+                th_dates: "التواريخ",
+                th_reason: "التفاصيل / ملاحظات",
+                btn_approve: "موافقة",
+                btn_reject: "رفض",
+                reason_annual: "إجازة سنوية",
+                reason_medical: "إجازة مرضية / طبية",
+                reason_emergency: "إجازة طارئة",
+                reason_family: "حدث عائلي / زواج",
+                reason_maternity: "إجازة أمومة / أبوة",
+                reason_unpaid: "إجازة بدون راتب",
+                recruitment_title: "الوظائف المطلوبة المفتوحة",
+                recruitment_subtitle: "إدارة الشاغرات الوظيفية وتوظيف الأقسام ومسارات المتقدمين.",
+                btn_add_job: "إضافة وظيفة جديدة",
+                job_desc_1: "مسؤول عن إدارة الحسابات الرئيسية عبر قطاعات التعدين والتصنيع الصناعي.",
+                job_desc_2: "تنسيق عمليات تسليم صهاريج الوقود اليومية والالتزام بمعايير السائقين.",
+                view_pipeline: "عرض مسار المرشحين ←",
+                admin_title: "إدارة النظام والتحكم في الصلاحيات",
+                report_recipients_title: "قائمة البريد الإلكتروني لمستلمي التقرير اليومي",
+                report_recipients_subtitle: "تحديد البريد الإلكتروني للمدراء والتنفيذيين الذين يجب إرسال تقارير الموارد البشرية اليومية الآلية إليهم.",
+                btn_add_recipient: "إضافة بريد مستلم",
+                report_modal_title: "إرسال التقرير اليومي عبر البريد",
+                report_modal_desc: "اختر البريد الإلكتروني للمدير المستلم وأدخل أي ملاحظات إضافية لإرسال ملخص الموارد البشرية.",
+                select_recipient: "حدد المدير المستلم",
+                custom_recipient_note: "بريد إلكتروني إضافي للمستلم (اختياري)",
+                report_notes: "ملاحظات / ملخص تنفيذي",
+                btn_confirm_send: "إرسال بريد التقرير",
+                th_admin_name: "اسم المسؤول",
+                th_admin_email: "البريد الإلكتروني",
+                th_admin_role: "دور الصلاحية",
+                th_admin_branch: "الفرع المعين",
+                modal_title: "إضافة موظف جديد",
+                modal_cancel: "إلغاء",
+                modal_save: "حفظ",
+                attendance_modal_title: "تسجيل حضور موظف",
+                attendance_modal_save: "حفظ",
+                leave_modal_title: "إضافة طلب إجازة",
+                leave_modal_save: "إرسال الطلب",
+                job_modal_title: "إضافة طلب وظيفة شغر",
+                job_modal_save: "نشر"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            const htmlRoot = document.getElementById('html-root');
+            const loginLangBtn = document.getElementById('login-lang-btn');
+            const appLangBtn = document.getElementById('app-lang-btn');
+
+            if (currentLang === 'ar') {
+                htmlRoot.setAttribute('dir', 'rtl');
+                htmlRoot.setAttribute('lang', 'ar');
+                loginLangBtn.innerText = 'English';
+                appLangBtn.innerText = 'English';
+            } else {
+                htmlRoot.setAttribute('dir', 'ltr');
+                htmlRoot.setAttribute('lang', 'en');
+                loginLangBtn.innerText = 'العربية';
+                appLangBtn.innerText = 'العربية';
+            }
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerText = translations[currentLang][key];
+                }
+            });
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+        }
+
+        function handleLogout() {
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function switchTab(tabId) {
+            ['dashboard', 'employees', 'attendance', 'leave', 'recruitment', 'admin'].forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                document.getElementById('nav-' + t).classList.remove('bg-red-600', 'text-white', 'font-medium');
+                document.getElementById('nav-' + t).classList.add('text-neutral-300', 'hover:bg-neutral-900');
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeNav = document.getElementById('nav-' + tabId);
+            activeNav.classList.remove('text-neutral-300', 'hover:bg-neutral-900');
+            activeNav.classList.add('bg-red-600', 'text-white', 'font-medium');
+
+            const titleKeys = {
+                dashboard: 'dashboard_title',
+                employees: 'emp_directory',
+                attendance: 'attendance_title',
+                leave: 'leave_title',
+                recruitment: 'recruitment_title',
+                admin: 'admin_title'
+            };
+            document.getElementById('page-title').setAttribute('data-i18n', titleKeys[tabId]);
+            document.getElementById('page-title').innerText = translations[currentLang][titleKeys[tabId]];
+        }
+
+        function openModal() { document.getElementById('employeeModal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('employeeModal').classList.add('hidden'); }
+        function openAttendanceModal() { document.getElementById('attendanceModal').classList.remove('hidden'); }
+        function closeAttendanceModal() { document.getElementById('attendanceModal').classList.add('hidden'); }
+        function openLeaveModal() { document.getElementById('leaveModal').classList.remove('hidden'); }
+        function closeLeaveModal() { document.getElementById('leaveModal').classList.add('hidden'); }
+        function openJobModal() { document.getElementById('jobModal').classList.remove('hidden'); }
+        function closeJobModal() { document.getElementById('jobModal').classList.add('hidden'); }
+        function openReportModal() { document.getElementById('reportModal').classList.remove('hidden'); }
+        function closeReportModal() { document.getElementById('reportModal').classList.add('hidden'); }
+
+        function addRecipientPrompt() {
+            const title = prompt(currentLang === 'ar' ? 'أدخل عنوان أو اسم المستلم:' : 'Enter recipient title or name:');
+            const email = prompt(currentLang === 'ar' ? 'أدخل البريد الإلكتروني للمستلم:' : 'Enter recipient email address:');
+            if (!email) return;
+
+            const list = document.getElementById('recipient-list');
+            const select = document.getElementById('reportRecipientSelect');
+            
+            const li = document.createElement('li');
+            li.className = 'py-2 flex justify-between items-center';
+            li.innerHTML = `
+                <div>
+                    <span class="font-medium text-gray-900">${title || 'Recipient'}</span>
+                    <span class="text-xs text-gray-500 ml-2 rtl:mr-2 rtl:ml-0">(${email})</span>
+                </div>
+                <button onclick="removeRecipient(this)" class="text-gray-400 hover:text-red-600 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
+            `;
+            list.appendChild(li);
+
+            const opt = document.createElement('option');
+            opt.value = email;
+            opt.innerText = `${title || 'Recipient'} (${email})`;
+            select.appendChild(opt);
+
+            alert(currentLang === 'ar' ? 'تمت إضافة مستلم البريد بنجاح!' : 'Recipient added successfully!');
+        }
+
+        function removeRecipient(btn) {
+            if (confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذا المستلم؟' : 'Are you sure you want to remove this recipient?')) {
+                btn.closest('li').remove();
+            }
+        }
+
+        function confirmSendDailyReport() {
+            const recipient = document.getElementById('reportRecipientSelect').value;
+            const customEmail = document.getElementById('customRecipientEmail').value;
+            const notes = document.getElementById('reportNotes').value;
+            const finalRecipients = customEmail ? `${recipient}, ${customEmail}` : recipient;
+
+            const dateStr = new Date().toLocaleDateString();
+            const leaveCount = document.querySelectorAll('#leave-table-body tr').length;
+            const openJobs = document.querySelectorAll('#job-grid > div').length;
+
+            closeReportModal();
+            alert(currentLang === 'ar'
+                ? `تم بنجاح إرسال التقرير اليومي بالبريد إلى (${finalRecipients})!\n\n- التاريخ: ${dateStr}\n- إجمالي الإجازات المعلقة: ${leaveCount}\n- الوظائف الشاغرة: ${openJobs}\n- ملاحظات إضافية: ${notes || 'لا يوجد'}\n- المرسل: admin@proenergy.com`
+                : `Daily HR Report successfully emailed to: ${finalRecipients}\n\n- Date: ${dateStr}\n- Pending Leave Requests: ${leaveCount}\n- Open Job Requisitions: ${openJobs}\n- Notes: ${notes || 'None'}\n- Sent by: admin@proenergy.com`
+            );
+        }
+
+        function deleteRow(button) {
+            if (confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذا العنصر؟' : 'Are you sure you want to delete this item?')) {
+                button.closest('tr').remove();
+            }
+        }
+
+        function deleteLeaveRow(button) {
+            if (confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف طلب الإجازة هذا؟' : 'Are you sure you want to delete this leave request?')) {
+                button.closest('tr').remove();
+                updateLeaveCount();
+            }
+        }
+
+        function deleteJobCard(button) {
+            if (confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذا الشاغر الوظيفي؟' : 'Are you sure you want to delete this job requisition?')) {
+                button.closest('.bg-white').remove();
+                updateJobCount();
+            }
+        }
+
+        function updateLeaveCount() {
+            const count = document.querySelectorAll('#leave-table-body tr').length;
+            document.getElementById('dash-leave-count').innerText = count;
+        }
+
+        function updateJobCount() {
+            const count = document.querySelectorAll('#job-grid > div').length;
+            document.getElementById('dash-open-count').innerText = count;
+        }
+
+        function addEmployee() {
+            const name = document.getElementById('empName').value;
+            const pos = document.getElementById('empPos').value;
+            if(!name || !pos) return alert('Please fill in required fields.');
+            const tbody = document.getElementById('employee-table-body');
+            tbody.innerHTML += `<tr>
+                <td class="p-4 font-medium text-gray-900">${name}</td>
+                <td class="p-4 text-gray-600">${pos}</td>
+                <td class="p-4 text-gray-600">${document.getElementById('empDept').value || 'General'}</td>
+                <td class="p-4 text-gray-600">${document.getElementById('empLoc').value || 'HQ'}</td>
+                <td class="p-4"><span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-medium">Active</span></td>
+                <td class="p-4 text-center"><button onclick="deleteRow(this)" class="text-gray-400 hover:text-red-600 p-1.5"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`;
+            closeModal();
+            alert(currentLang === 'ar' ? 'تمت إضافة الموظف بنجاح!' : 'Employee added successfully!');
+        }
+
+        function addAttendanceRecord() {
+            const name = document.getElementById('attName').value;
+            if(!name) return alert('Please enter name.');
+            const tbody = document.getElementById('attendance-table-body');
+            tbody.innerHTML += `<tr>
+                <td class="p-4 font-medium text-gray-900">${name}</td>
+                <td class="p-4 text-gray-600">${document.getElementById('attDept').value || 'General'}</td>
+                <td class="p-4 text-gray-600">${document.getElementById('attIn').value || '-'}</td>
+                <td class="p-4 text-gray-600">${document.getElementById('attOut').value || '-'}</td>
+                <td class="p-4"><span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-medium">${document.getElementById('attStatus').value}</span></td>
+                <td class="p-4 text-center"><button onclick="deleteRow(this)" class="text-gray-400 hover:text-red-600 p-1.5"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`;
+            closeAttendanceModal();
+            alert(currentLang === 'ar' ? 'تم تسجيل الحضور بنجاح!' : 'Attendance logged successfully!');
+        }
+
+        function addLeaveRequest() {
+            const name = document.getElementById('leaveName').value;
+            const reasonType = document.getElementById('leaveReasonType').value;
+            const dates = document.getElementById('leaveDates').value;
+            const details = document.getElementById('leaveDetails').value;
+
+            if(!name || !dates) {
+                alert(currentLang === 'ar' ? 'يرجى إكمال الحقول المطلوبة.' : 'Please fill in required fields.');
+                return;
+            }
+
+            const tbody = document.getElementById('leave-table-body');
+            const newRow = document.createElement('tr');
+            
+            let badgeBg = 'bg-blue-100 text-blue-800';
+            if(reasonType.includes('Medical')) badgeBg = 'bg-purple-100 text-purple-800';
+            if(reasonType.includes('Emergency')) badgeBg = 'bg-red-100 text-red-800';
+            if(reasonType.includes('Family')) badgeBg = 'bg-amber-100 text-amber-800';
+
+            newRow.innerHTML = `
+                <td class="p-4 font-medium text-gray-900">${name}</td>
+                <td class="p-4"><span class="${badgeBg} text-xs px-2.5 py-1 rounded-full font-semibold">${reasonType}</span></td>
+                <td class="p-4 text-gray-600">${dates}</td>
+                <td class="p-4 text-gray-600">${details || '-'}</td>
+                <td class="p-4 text-center space-x-2 rtl:space-x-reverse">
+                    <button onclick="alert('Leave request approved!')" class="bg-emerald-500 text-white px-3 py-1 rounded text-xs hover:bg-emerald-600" data-i18n="btn_approve">Approve</button>
+                    <button onclick="alert('Leave request rejected!')" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700" data-i18n="btn_reject">Reject</button>
+                    <button onclick="deleteLeaveRow(this)" title="Delete Request" class="text-gray-400 hover:text-red-600 transition p-1.5 inline-block">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            `;
+            tbody.prepend(newRow);
+            closeLeaveModal();
+            updateLeaveCount();
+
+            document.getElementById('leaveName').value = '';
+            document.getElementById('leaveDates').value = '';
+            document.getElementById('leaveDetails').value = '';
+            alert(currentLang === 'ar' ? 'تم تقديم طلب الإجازة بنجاح!' : 'Leave request submitted successfully!');
+        }
+
+        function addJobOpening() {
+            const title = document.getElementById('jobTitleInput').value;
+            if(!title) return alert('Please enter job title.');
+            const grid = document.getElementById('job-grid');
+            grid.innerHTML += `<div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-bold text-gray-900">${title}</h3>
+                        <button onclick="deleteJobCard(this)" class="text-gray-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Location: ${document.getElementById('jobLocInput').value || 'HQ'}</p>
+                    <p class="text-sm text-gray-600 mt-3">${document.getElementById('jobDescInput').value || 'No description.'}</p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded font-medium">${document.getElementById('jobAppCount').value || 0} Applicants</span>
+                    <button onclick="alert('Viewing pipeline')" class="text-red-600 text-sm font-semibold hover:underline">View Pipeline &rarr;</button>
+                </div>
+            </div>`;
+            closeJobModal();
+            updateJobCount();
+            alert(currentLang === 'ar' ? 'تم نشر الوظيفة بنجاح!' : 'Job opening posted successfully!');
+        }
+    </script>
+</body>
+</html>
